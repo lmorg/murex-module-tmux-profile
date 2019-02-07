@@ -2,7 +2,12 @@
 	{
 		"Name": "tmux-profile",
 		"Summary": "Saves and edits .tmux.conf (defaults are my own personal preferences)",
-		"Version": "1.0",
-		"Source": "tmux-profile.mx"
+		"Version": "1.1",
+		"Source": "tmux-profile.mx",
+        "Dependencies": {
+            "Optional": [],
+            "Required": [ "tmux" ],
+            "Platform": [ "posix" ]
+        }
 	}
 ]
