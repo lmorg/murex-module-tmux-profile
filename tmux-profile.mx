@@ -10,7 +10,9 @@ private config.tmux.write.dynamic {
     $config -> >> $ARGS[1]
 }
 
-config define tmux profile {
+set TMUX_CONF_DEFAULT="${ open tmux.conf }\n\nset -g default-shell $MUREX_EXE"
+
+config define tmux profile ({
     "Description": "My preferred configuration for tmux",
     "DataType": "str",
     "Global": true,
@@ -20,105 +22,11 @@ config define tmux profile {
         }),
         "Write": ({
             -> config.tmux.write.dynamic ~/.tmux.conf
-            if { $TMUX } then {
+            if { \$TMUX } then {
                 tmux: source-file ~/.tmux.conf \; display-message "Config reloaded..."
             }
         })
     },
-    "Default": (
-        unbind C-b
-        set-option -g prefix F2 
-
-        unbind %
-        bind + split-window -h
-        bind = split-window -h
-        bind - split-window -v
-
-        bind r source-file ~/.tmux.conf \; display-message "Config reloaded..."
-
-        ###colours###
-        # Set status bar
-        #set -g status-bg '#505050'
-        #set -g status-bg colour0
-
-        #set -g pane-active-border-bg default
-        #set -g pane-active-border-fg '#B26818'
-        #set -g pane-border-bg default
-        #set -g pane-border-fg '#505050'
-        ######
-
-        ###usabilities###
-        set -g mouse on
-        #set -g mouse off
-        bind -n WheelUpPane if-shell -F -t = "#{mouse_any_flag}" "send-keys -M" "if -Ft= '#{pane_in_mode}' 'send-keys -M' 'copy-mode -e'"
-
-        # pastes tmux buffer to X buffer
-        bind-key y run-shell "tmux show-buffer | xclip -selection clipboard" 
-
-        bind-key m setw -g mouse off
-        bind-key M setw -g mouse on
-
-        # vi keys and paste buffer
-        setw -g mode-keys vi
-        unbind [
-        bind Escape copy-mode
-        unbind p
-        bind p paste-buffer
-        #bind-key -t vi-copy 'v' begin-selection
-        #bind-key -t vi-copy 'y' copy-selection
-
-        ##url view from paste buffer
-        ##bind-key u capture-pane \; save-buffer /tmp/tmux-buffer \; run-shell "$TERMINAL -e 'cat /tmp/tmux-buffer | urlview'"
-        #bind-key u capture-pane \; save-buffer /tmp/tmux-buffer \; run-shell "/bin/sh -c '/usr/bin/urlview /tmp/tmux-buffer'"
-
-        ### instructs tmux to expect UTF-8 sequences
-        #setw -g utf8 on
-        #set -g status-utf8 on
-
-        #set-option -g terminal-overrides '*:enacs@:smacs@:rmacs@:acsc@'
-        #set -g default-terminal "xterm-256color"
-        #set -g default-terminal "screen"
-        set-option -sa terminal-overrides ",xterm*:Tc"
-        #set -g terminal-overrides "xterm*:kLFT5=\eOD:kRIT5=\eOC:kUP5=\eOA:kDN5=\eOB:smkx@:rmkx@"
-
-        setw -g automatic-rename on
-        ####################################################
-        ### http://www.darkcoding.net/tmux/tmux.conf.txt ###
-        # History
-        set -g history-limit 1000
-
-        # Terminal emulator window title
-        #set -g set-titles on
-        #set -g set-titles-string '#S:#I.#P #W'
-
-        ##set -g status-interval 60
-        ##set -g status-left-length 30
-        ##set -g status-left '#[fg=colour237]#I:#P #[fg=white]#(whoami)@#H'
-        #set -g status-justify left
-        #set -g status-right-length 90
-
-        # Notifying if other windows has activities
-        #setw -g monitor-activity on
-        set -g visual-activity on
-
-        ## Window status colors
-        #setw -g window-status-bg black
-        #setw -g window-status-fg colour248
-        ##setw -g window-status-alert-attr underscore
-        ##setw -g window-status-alert-bg colour235
-        ##setw -g window-status-alert-fg colour248
-        #setw -g window-status-current-attr bright
-        #setw -g window-status-current-bg colour235
-        #setw -g window-status-current-fg colour248
-
-        # Clock
-        setw -g clock-mode-colour colour250
-        setw -g clock-mode-style 24
-
-        ####################################################
-        ####################################################
-
-        set -sg escape-time 0
-    )
-}
+    "Default": ($TMUX_CONF_DEFAULT)
+})
  
