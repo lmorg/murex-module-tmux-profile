@@ -22,7 +22,7 @@ config define tmux profile ({
         }),
         "Write": ({
             -> config.tmux.write.dynamic ~/.tmux.conf
-            if { \$TMUX } then {
+            if { =TMUX } then {
                 tmux: source-file ~/.tmux.conf \; display-message "Config reloaded..."
             }
         })
