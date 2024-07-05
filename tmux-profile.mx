@@ -6,27 +6,27 @@ private config.tmux.read.dynamic {
 private config.tmux.write.dynamic {
     # Reads a file from <stdin> and writes it to $ARGS[1] with a warning header
     -> set str config
-    out "#####\n# This file is managed by murex. Please don't edit it manually.\n#####" -> > $ARGS[1]
-    $config -> >> $ARGS[1]
+    out "#####\n# This file is managed by murex. Please don't edit it manually.\n#####" |> $ARGS[1]
+    $config >> $ARGS[1]
 }
 
 set TMUX_CONF_DEFAULT="${ open tmux.conf }\n\nset -g default-shell $MUREX_EXE"
 
-config define tmux profile ({
-    "Description": "My preferred configuration for tmux",
-    "DataType": "str",
-    "Global": true,
-    "Dynamic": {
-        "Read": ({
+config define tmux profile %{
+    Description: "My preferred configuration for tmux"
+    DataType: str
+    Global: true
+    Dynamic: {
+        Read: '{
             config.tmux.read.dynamic ~/.tmux.conf
-        }),
-        "Write": ({
+        }'
+        Write: '{
             -> config.tmux.write.dynamic ~/.tmux.conf
-            if { =TMUX } then {
-                tmux: source-file ~/.tmux.conf \; display-message "Config reloaded..."
+            if { $TMUX } then {
+                tmux source-file ~/.tmux.conf \; display-message "Config reloaded..."
             }
-        })
-    },
-    "Default": ($TMUX_CONF_DEFAULT)
-})
+        }'
+    }
+    Default: $TMUX_CONF_DEFAULT
+}
  
